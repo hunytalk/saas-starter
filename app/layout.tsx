@@ -10,8 +10,9 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "SaaS Starter",
-  description: "Production-ready SaaS skeleton on the free-tier stack",
+  title: "LeasePilot — AI Lease Intelligence for Independent Landlords",
+  description:
+    "Upload any lease PDF and instantly extract every critical date, clause, and obligation. Never miss a renewal or rent escalation again.",
 };
 
 const geistSans = Geist({

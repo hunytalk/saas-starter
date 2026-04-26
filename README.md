@@ -1,7 +1,9 @@
-# SaaS Starter
+# LeasePilot — AI Lease Intelligence for Independent Landlords
 
-Production-ready SaaS skeleton on the free-tier stack.
-Built on Next.js 15 (App Router) + Supabase + Vercel + Resend + PostHog + Sentry.
+Upload any lease PDF and instantly extract every critical date, clause, and obligation.
+Never miss a renewal, rent escalation, or expiration again.
+
+Built on Next.js 15 (App Router) + Supabase + Vercel + Resend + PostHog + Sentry (zero-cost free-tier stack).
 
 ## Stack
 
@@ -95,21 +97,41 @@ vercel --prod
 Set all environment variables in the Vercel project dashboard before the first deploy.
 Supabase requires the production URL added to **Authentication → URL Configuration → Redirect URLs**.
 
+## Waitlist
+
+`POST /api/waitlist` accepts `{ "email": "user@example.com" }`, inserts into the
+`waitlist` Supabase table, sends a welcome email via Resend, and fires a
+`waitlist_signup_server` PostHog event.
+
+Run the migration before first use:
+
+```bash
+# With Supabase CLI linked to your project
+supabase db push
+# or apply manually in the Supabase SQL editor:
+# supabase/migrations/20260426000000_create_waitlist.sql
+```
+
 ## Project structure
 
 ```
 app/
+  page.tsx       # LeasePilot landing page + waitlist CTA
   auth/          # Sign-up, sign-in, forgot-password, confirm flows
   protected/     # Example authenticated page
   api/
+    waitlist/    # POST — email capture + Supabase insert + welcome email
     email-test/  # POST — Resend smoke test
     sentry-test/ # GET  — Sentry smoke test
 components/
+  waitlist-form.tsx     # Client-side form with PostHog analytics events
   posthog-provider.tsx  # Client-side PostHog init
 lib/
   posthog.ts    # Server-side PostHog client
   resend.ts     # Resend client + sendTransactionalEmail helper
   supabase/     # Supabase SSR client helpers
+supabase/
+  migrations/   # SQL migrations (waitlist table + RLS)
 sentry.*.config.ts  # Sentry instrumentation (client / server / edge)
 next.config.ts      # Sentry build wrapper + Next.js config
 vercel.json         # Vercel deploy settings
